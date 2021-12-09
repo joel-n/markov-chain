@@ -7,8 +7,9 @@ class Node():
     
     def __init__(
         self, center, radius, label, 
-        facecolor='#2693de', edgecolor='#e6e6e6',
-        ring_facecolor='#a3a3a3', ring_edgecolor='#a3a3a3'
+        facecolor='#233dff', edgecolor='#565251',
+        ring_facecolor='#a3a3a3', ring_edgecolor='#a3a3a3',
+        init_prob = None, mean = None
         ):
         """
         Initializes a Markov Chain Node(for drawing purposes)
@@ -16,10 +17,15 @@ class Node():
             - center : Node (x,y) center
             - radius : Node radius
             - label  : Node label
+
+            - initial probabilities and state means (see MarkovChain)
         """
         self.center = center
         self.radius = radius
         self.label  = label
+
+        self.init_prob = init_prob
+        self.mean = mean
 
         # For convinience: x, y coordinates of the center
         self.x = center[0]
@@ -39,8 +45,20 @@ class Node():
             'fontsize': 16
         }
     
+        self.text_args_init = {
+            'ha': 'center', 
+            'va': 'center', 
+            'fontsize': 10
+        }
+
+        self.text_args_mean = {
+            'horizontalalignment': 'left', 
+            'verticalalignment': 'top', 
+            'fontsize': 8
+        }
     
-    def add_circle(self, ax):
+    
+    def add_circle(self, ax, direction='left'):
         """
         Add the annotated circle for the node
         """
@@ -57,6 +75,18 @@ class Node():
             color = '#ffffff', 
             **self.text_args
         )
+
+        if direction == 'left':
+            x_offset = self.x - 4.5*self.radius
+        else:
+            x_offset = self.x + 2*self.radius
+
+        if self.init_prob is not None:
+            ax.annotate(str(self.init_prob), xy=(self.x, self.y - 0.5*self.radius), color='#ffc34c', **self.text_args_init)
+
+        if self.mean is not None:
+            y_offset = self.y + 0.5*self.radius*len(self.mean)/2
+            ax.annotate(np.array2string(self.mean, precision=3, separator='\n'), xy=(x_offset, y_offset), color='#000000', **self.text_args_mean)
         
         
     def add_self_loop(self, ax, prob=None, direction='up'):
@@ -86,7 +116,7 @@ class Node():
             self.radius, 
             start, 
             angle, 
-            width = self.ring_width
+            width = self.ring_width*(0.3+2.5*prob)
         )
         # Add the triangle (arrow)
         offset = 0.2
@@ -105,4 +135,3 @@ class Node():
         # Probability to add?
         if prob:
             ax.annotate(str(prob), xy=(self.x, prob_y), color='#000000', **self.text_args)
-
