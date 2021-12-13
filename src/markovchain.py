@@ -43,7 +43,11 @@ class MarkovChain:
         self.node_edgecolor = '#565251'
 
         # Drawing config
-        self.node_radius = 0.5
+        if M.shape[0] == 4:
+            self.node_radius = 0.7
+        else:
+            self.node_radius = 0.5
+            
         self.arrow_width = 0.03
         self.arrow_head_width = 0.20
         self.text_args = {

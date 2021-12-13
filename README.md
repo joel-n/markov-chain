@@ -64,6 +64,7 @@ mc.draw("../img/markov-chain-four-states.png")
 
 
 #### Plotting HMM Markov chains with initial probabilities and emission means
+##### Contribution by joel-n
 
 ```
 P = np.array([

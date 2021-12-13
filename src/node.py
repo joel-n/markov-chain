@@ -7,7 +7,7 @@ class Node():
     
     def __init__(
         self, center, radius, label, 
-        facecolor='#233dff', edgecolor='#565251',
+        facecolor='#2693de', edgecolor='#e6e6e6',
         ring_facecolor='#a3a3a3', ring_edgecolor='#a3a3a3',
         init_prob = None, mean = None
         ):
