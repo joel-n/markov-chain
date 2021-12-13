@@ -44,7 +44,7 @@ class MarkovChain:
 
         # Drawing config
         if M.shape[0] == 4:
-            self.node_radius = 0.7
+            self.node_radius = 0.65
         else:
             self.node_radius = 0.5
             
@@ -81,7 +81,7 @@ class MarkovChain:
             self.init_prob_direction = ['left', 'right', 'left']
         elif self.n_states == 4:
             self.figsize = (8, 8)
-            self.xlim = (-6.5, 6.5)
+            self.xlim = (-7, 7)
             self.ylim = (-6.5, 6.5)
             self.node_centers = [[-4,4], [4,4], [4,-4], [-4,-4]]
             self.init_prob_direction = ['left', 'right', 'right', 'left']
