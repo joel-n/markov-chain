@@ -84,7 +84,7 @@ mc = MarkovChain(P, ['1', '2', '3', '4'], init_probs, mean)
 mc.draw("../img/markov-chain-four-states-HMM.png")
 ```
 
-![four state markov chain transition diagram python](https://github.com/joel-n/markov-chain/blob/master/img/markov-chain-four-states-hmm.png)
+![four state markov chain transition diagram python](https://github.com/joel-n/markov-chain/blob/master/img/markov-chain-four-states-HMM.png)
 
 
 ## Author
