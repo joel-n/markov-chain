@@ -70,13 +70,13 @@ class MarkovChain:
         if self.n_states == 2:
             self.figsize = (10, 4)
             self.xlim = (-7, 7)
-            self.ylim = (-2, 2)
+            self.ylim = (-3, 3)
             self.node_centers = [[-4,0], [4,0]]
             self.init_prob_direction = ['left', 'right']
         else:
             self.figsize = (10, 10)
             self.xlim = (-9.5, 8.5)
-            self.ylim = (-7, 9)
+            self.ylim = (-8, 9)
             self.node_centers = self.geo.get_coordinates(self.n_states)
             self.init_prob_direction = ['left' for i in range(self.n_states)]
 
@@ -145,48 +145,46 @@ class MarkovChain:
         n2_beg = [self.anchor_x[node2_ix,  -(2*rel_offset+1)],  self.anchor_y[node2_ix,  -(2*rel_offset+1)]]
         n1_end = [self.anchor_x[node1_ix,(2*rel_offset+1)], self.anchor_y[node1_ix,(2*rel_offset+1)]]
 
-        arrow = mpatches.FancyArrow(
-            n1_beg[0],
-            n1_beg[1],
-            n2_end[0] - n1_beg[0],
-            n2_end[1] - n1_beg[1],
-            width = self.arrow_width*(0.3+2.5*p12),
-            head_width = self.arrow_head_width,
-            length_includes_head=True
-        )
-        p = PatchCollection(
-            [arrow],
-            edgecolor = self.arrow_edgecolor,
-            facecolor = self.arrow_facecolor
-        )
-        ax.add_collection(p)
-
-        # Probability to add?
-        x_prob = n1_beg[0] + 0.2*(n2_end[0] - n1_beg[0])
-        y_prob = n1_beg[1] + 0.2*(n2_end[1] - n1_beg[1])
         if p12:
+            arrow = mpatches.FancyArrow(
+                n1_beg[0],
+                n1_beg[1],
+                n2_end[0] - n1_beg[0],
+                n2_end[1] - n1_beg[1],
+                width = self.arrow_width*(0.3+2.5*p12),
+                head_width = self.arrow_head_width,
+                length_includes_head=True
+            )
+            p = PatchCollection(
+                [arrow],
+                edgecolor = self.arrow_edgecolor,
+                facecolor = self.arrow_facecolor
+            )
+
+            x_prob = n1_beg[0] + 0.2*(n2_end[0] - n1_beg[0])
+            y_prob = n1_beg[1] + 0.2*(n2_end[1] - n1_beg[1])
+            ax.add_collection(p)
             ax.annotate(str(p12), xy=(x_prob, y_prob), color='#000000', **self.text_args)
 
-        arrow21 = mpatches.FancyArrow(
-            n2_beg[0],
-            n2_beg[1],
-            n1_end[0] - n2_beg[0],
-            n1_end[1] - n2_beg[1],
-            width = self.arrow_width*(0.3+2.5*p21),
-            head_width = self.arrow_head_width,
-            length_includes_head=True
-        )
-        p = PatchCollection(
-            [arrow21],
-            edgecolor = self.arrow_edgecolor,
-            facecolor = self.arrow_facecolor
-        )
-        ax.add_collection(p)
-
-        # Probability to add?
-        x_prob = n2_beg[0] + 0.2*(n1_end[0] - n2_beg[0])
-        y_prob = n2_beg[1] + 0.2*(n1_end[1] - n2_beg[1])
         if p21:
+            arrow21 = mpatches.FancyArrow(
+                n2_beg[0],
+                n2_beg[1],
+                n1_end[0] - n2_beg[0],
+                n1_end[1] - n2_beg[1],
+                width = self.arrow_width*(0.3+2.5*p21),
+                head_width = self.arrow_head_width,
+                length_includes_head=True
+            )
+            p = PatchCollection(
+                [arrow21],
+                edgecolor = self.arrow_edgecolor,
+                facecolor = self.arrow_facecolor
+            )
+
+            x_prob = n2_beg[0] + 0.2*(n1_end[0] - n2_beg[0])
+            y_prob = n2_beg[1] + 0.2*(n1_end[1] - n2_beg[1])
+            ax.add_collection(p)
             ax.annotate(str(p21), xy=(x_prob, y_prob), color='#000000', **self.text_args)
 
 
@@ -209,8 +207,8 @@ class MarkovChain:
                 node.add_circle(ax)
 
         # Add the transitions
-        for i in range(self.M.shape[0]):
-            for j in range(self.M.shape[1]):
+        for i in range(self.n_states):
+            for j in range(self.n_states):
                 # self loops
                 if i == j:
                     # Loop direction
@@ -221,8 +219,10 @@ class MarkovChain:
                 # directed arrows
                 elif i > j:
                     continue
-                elif self.M[i,j] > 0:
+                else:
                     self.add_arrows(ax, i, j)
+
+        self.add_arrows(ax, 0, self.n_states-1)
 
         plt.axis('off')
         

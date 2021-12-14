@@ -4,10 +4,10 @@ from matplotlib.collections import PatchCollection
 import matplotlib.pyplot as plt
 
 class Node():
-    #'#2693de'
+    
     def __init__(
         self, center, radius, label, ix,
-        facecolor='#6aa84f', edgecolor='#e6e6e6',
+        facecolor='#6aa84f', edgecolor='#e6e6e6', # Original facecolor '#2693de'
         ring_facecolor='#a3a3a3', ring_edgecolor='#a3a3a3',
         init_prob = None, mean = None
         ):
