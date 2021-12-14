@@ -50,12 +50,17 @@ class MarkovChain:
         else:
             self.node_radius = 0.5
             
+        if self.n_states > 5:
+            font_size = 16-0.5*self.n_states
+        else:
+            font_size = 16
+
         self.arrow_width = 0.03
         self.arrow_head_width = 0.20
         self.text_args = {
             'ha': 'center',
             'va': 'center',
-            'fontsize': 16
+            'fontsize': font_size
         }
 
         # Build the network
@@ -76,11 +81,11 @@ class MarkovChain:
         else:
             self.figsize = (10, 10)
             self.xlim = (-9.5, 8.5)
-            self.ylim = (-8, 9)
+            self.ylim = (-8.5, 9)
             self.node_centers = self.geo.get_coordinates(self.n_states)
             self.init_prob_direction = ['left' for i in range(self.n_states)]
 
-        self.anchor_x, self.anchor_y = self.geo.get_anchor_points(coords=self.node_centers, radius=self.node_radius)
+        self.anchor_x, self.anchor_y, self.mean_vec_anchors = self.geo.get_anchor_points(coords=self.node_centers, radius=self.node_radius)
 
     def build_network(self):
         """
@@ -99,7 +104,8 @@ class MarkovChain:
                     self.labels[i],
                     ix = i,
                     init_prob=self.init_probs[i],
-                    mean=self.means[i] 
+                    mean=self.means[i], 
+                    mean_anchor=self.mean_vec_anchors[:, i]
                 )
                 self.nodes.append(node)
         else:

@@ -5,7 +5,7 @@ class Geometry:
     def get_coordinates(self, n_nodes):
 
         coords = []
-        base_x = 6
+        base_x = 5
         base_y = 0
         ang = 2*np.pi/n_nodes
         
@@ -26,7 +26,10 @@ class Geometry:
         anchor_x = np.zeros((n_nodes, 2*n_nodes))
         anchor_y = np.zeros((n_nodes, 2*n_nodes))
 
-        
+        mean_anchor = np.zeros((2, n_nodes))
+        center_ang = 2*np.pi / n_nodes
+        mean_ang = 0
+
         polygon_ang = (n_nodes - 2)*np.pi           # Total angle sum of polygon
         corner_ang = polygon_ang / n_nodes          # Angle at nodes in polygon
         if n_nodes == 2:
@@ -46,5 +49,10 @@ class Geometry:
             start_ang += 4*anchor_ang
             if n_nodes == 2:
                 start_ang = np.pi - anchor_ang*n_nodes
+                mean_ang += (i+1)*np.pi
 
-        return anchor_x, anchor_y
+            mean_anchor[0, i] = cx + 3*radius*np.cos(mean_ang)
+            mean_anchor[1, i] = cy + 3*radius*np.sin(mean_ang)    
+            mean_ang += center_ang
+
+        return anchor_x, anchor_y, mean_anchor

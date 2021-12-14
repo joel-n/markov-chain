@@ -9,7 +9,7 @@ class Node():
         self, center, radius, label, ix,
         facecolor='#6aa84f', edgecolor='#e6e6e6', # Original facecolor '#2693de'
         ring_facecolor='#a3a3a3', ring_edgecolor='#a3a3a3',
-        init_prob = None, mean = None
+        init_prob = None, mean = None, mean_anchor=None
         ):
         """
         Initializes a Markov Chain Node(for drawing purposes)
@@ -27,6 +27,9 @@ class Node():
 
         self.init_prob = init_prob
         self.mean = mean
+        if mean is not None:
+            self.meanpos_x = mean_anchor[0]
+            self.meanpos_y = mean_anchor[1]
 
         # For convinience: x, y coordinates of the center
         self.x = center[0]
@@ -53,8 +56,8 @@ class Node():
         }
 
         self.text_args_mean = {
-            'horizontalalignment': 'left', 
-            'verticalalignment': 'top', 
+            'horizontalalignment': 'center', 
+            'verticalalignment': 'center', 
             'fontsize': 8
         }
     
@@ -87,7 +90,8 @@ class Node():
 
         if self.mean is not None:
             y_offset = self.y + 0.5*self.radius*len(self.mean)/2
-            ax.annotate(np.array2string(self.mean, precision=3, separator='\n'), xy=(x_offset, y_offset), color='#000000', **self.text_args_mean)
+            ax.annotate(np.array2string(self.mean, precision=3, separator='\n'), xy=(self.meanpos_x, self.meanpos_y), color='#000000', **self.text_args_mean)
+            #ax.annotate(np.array2string(self.mean, precision=3, separator='\n'), xy=(x_offset, y_offset), color='#000000', **self.text_args_mean)
         
         
     def add_self_loop(self, ax, prob=None, direction='up'):
