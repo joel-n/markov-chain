@@ -66,26 +66,24 @@ mc.draw("../img/markov-chain-N-states.png")
 
 #### Plotting HMM Markov chains with initial probabilities and emission means
 
+```
+N = 5
+P = np.random.random((N, N))
+for n in range(N):
+	P[n,:] = P[n,:]/np.sum(P[n,:])
+P = np.around(P, 3)
+
+init_probs = np.random.random(N)
+init_probs = np.around(init_probs / np.sum(init_probs), 3)
+        
+mean = np.random.random((N, 3))
+        
+mc = MarkovChain(P, [f'{i+1}' for i in range(N)], init_probs, mean)
+mc.draw("../img/markov-chain-N-states-hmm.png")
 
 ```
-P = np.array([
-        [0.8, 0.1, 0.1, 0.0], 
-        [0.1, 0.7, 0.0, 0.2],
-        [0.1, 0.0, 0.7, 0.2],
-        [0.1, 0.0, 0.7, 0.2]
-    ])
-init_probs = np.array([0.1, 0.2, 0.6, 0.1])
-mean = np.array([
-	[0.66, 0.3, 0.66, 0.3],
-	[2.2, 9.3, 0.66, 0.3],
-        [1.2, 8.9, 0.66, 0.3],
-	[9.1, 0.3, 0.66, 0.3]
-	])
-mc = MarkovChain(P, ['1', '2', '3', '4'], init_probs, mean)
-mc.draw("../img/markov-chain-four-states-HMM.png")
-```
 
-![four state markov chain transition diagram python](https://github.com/joel-n/markov-chain/blob/master/img/markov-chain-four-states-HMM.png)
+![five state markov chain transition diagram hmm python](https://github.com/joel-n/markov-chain/blob/master/img/markov-chain-N-states-hmm.png)
 
 
 ## Original author
