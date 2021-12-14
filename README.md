@@ -4,7 +4,7 @@ Simple Markov Chain visualization module in Python. Only requires **matplotlib**
 
 ## Description
 
-The current version works with 2 to 9 states (can plot more, but graph becomes cluttery).
+The current version works with 2 to 9 states - it is possible to plot more, but graph becomes cluttery. (2 to 4 states in the original version 2021-12-14.)
  
 ## Getting Started
 
@@ -31,38 +31,22 @@ mc.draw("../img/markov-chain-two-states.png")
 
 ![two state markov chain transition diagram python](https://github.com/NaysanSaran/markov-chain/blob/master/img/markov-chain-two-states.png)
 
-
-#### 3-state Markov chain demo
-
-```
-P = np.array([
-    [0.8, 0.1, 0.1],
-    [0.1, 0.7, 0.2],
-    [0.1, 0.7, 0.2],
-])
-mc = MarkovChain(P, ['A', 'B', 'C'])
-mc.draw("../img/markov-chain-three-states.png")
-```
-
-![three state markov chain transition diagram python](https://github.com/NaysanSaran/markov-chain/blob/master/img/markov-chain-three-states.png)
-
+## Contribution by [joel-n](https://github.com/joel-n)
 
 #### 4-state Markov chain demo
 
 ```
 P = np.array([
-    [0.8, 0.1, 0.1, 0.0],
-    [0.1, 0.7, 0.0, 0.2],
-    [0.1, 0.0, 0.7, 0.2],
-    [0.1, 0.0, 0.7, 0.2]
+    [0.65, 0.2, 0.15, 0.0], 
+    [0.3, 0.3, 0.3, 0.15],
+    [0.1, 0.0, 0.7, 0.15],
+    [0.4, 0.2, 0.3, 0.1]
 ])
-mc = MarkovChain(P, ['1', '2', '3', '4'])
+mc = MarkovChain(P, [r'$Z^1$', r'$Z^2$', r'$Z^3$', r'$Z^4$'])
 mc.draw("../img/markov-chain-four-states.png")
 ```
 
-![four state markov chain transition diagram python](https://github.com/NaysanSaran/markov-chain/blob/master/img/markov-chain-four-states.png)
-
-## Contribution by [joel-n](https://github.com/joel-n)
+![four state markov chain transition diagram python](https://github.com/joel-n/markov-chain/blob/master/img/markov-chain-four-states.png)
 
 #### Plotting more than 4 states with automatic coordinate generation
 
