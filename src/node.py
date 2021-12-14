@@ -4,10 +4,10 @@ from matplotlib.collections import PatchCollection
 import matplotlib.pyplot as plt
 
 class Node():
-    
+    #'#2693de'
     def __init__(
-        self, center, radius, label, 
-        facecolor='#2693de', edgecolor='#e6e6e6',
+        self, center, radius, label, ix,
+        facecolor='#6aa84f', edgecolor='#e6e6e6',
         ring_facecolor='#a3a3a3', ring_edgecolor='#a3a3a3',
         init_prob = None, mean = None
         ):
@@ -20,6 +20,7 @@ class Node():
 
             - initial probabilities and state means (see MarkovChain)
         """
+        self.ix = ix
         self.center = center
         self.radius = radius
         self.label  = label

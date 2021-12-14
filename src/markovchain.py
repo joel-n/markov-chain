@@ -6,6 +6,7 @@ from numpy.lib.shape_base import tile
 
 # module from this repository
 from node import Node
+from geometry import Geometry
 
 class MarkovChain:
 
@@ -18,11 +19,12 @@ class MarkovChain:
             - init_probs_   List of initial probabilities for the states
             - means_        List of means for the (HMM) emissions of each state
         """
+        self.geo = Geometry()
 
         if M.shape[0] < 2:
             raise Exception("There should be at least 2 states")
-        if M.shape[0] > 4:
-            raise Exception("Only works with 4 states max for now")
+        if M.shape[0] > 9:
+            raise Exception("Graph get cluttery above 9 states")
         if M.shape[0] != M.shape[1]:
             raise Exception("Transition matrix should be square")
         if M.shape[0] != len(labels):
@@ -43,7 +45,7 @@ class MarkovChain:
         self.node_edgecolor = '#565251'
 
         # Drawing config
-        if M.shape[0] == 4:
+        if M.shape[0] >= 4:
             self.node_radius = 0.65
         else:
             self.node_radius = 0.5
@@ -65,27 +67,20 @@ class MarkovChain:
         Positions the node centers given the number of states
         """
         # Node positions
-        self.node_centers = []
-
         if self.n_states == 2:
             self.figsize = (10, 4)
             self.xlim = (-7, 7)
             self.ylim = (-2, 2)
             self.node_centers = [[-4,0], [4,0]]
             self.init_prob_direction = ['left', 'right']
-        elif self.n_states == 3:
-            self.figsize = (10, 6)
-            self.xlim = (-5.5, 5.5)
-            self.ylim = (-3, 3)
-            self.node_centers = [[-3,-2], [3,-2], [-3,2]]
-            self.init_prob_direction = ['left', 'right', 'left']
-        elif self.n_states == 4:
-            self.figsize = (8, 8)
-            self.xlim = (-7, 7)
-            self.ylim = (-6.5, 6.5)
-            self.node_centers = [[-4,4], [4,4], [4,-4], [-4,-4]]
-            self.init_prob_direction = ['left', 'right', 'right', 'left']
+        else:
+            self.figsize = (10, 10)
+            self.xlim = (-9.5, 8.5)
+            self.ylim = (-7, 9)
+            self.node_centers = self.geo.get_coordinates(self.n_states)
+            self.init_prob_direction = ['left' for i in range(self.n_states)]
 
+        self.anchor_x, self.anchor_y = self.geo.get_anchor_points(coords=self.node_centers, radius=self.node_radius)
 
     def build_network(self):
         """
@@ -102,6 +97,7 @@ class MarkovChain:
                     self.node_centers[i],
                     self.node_radius,
                     self.labels[i],
+                    ix = i,
                     init_prob=self.init_probs[i],
                     mean=self.means[i] 
                 )
@@ -111,37 +107,52 @@ class MarkovChain:
                 node = Node(
                     self.node_centers[i],
                     self.node_radius,
-                    self.labels[i] 
+                    self.labels[i],
+                    ix = i
                 )
                 self.nodes.append(node)
 
 
-    def add_arrow(self, ax, node1, node2, prob=None):
-        """
-        Add a directed arrow between two nodes
-        """
-        # x,y start of the arrow
-        x_start = node1.x + np.sign(node2.x-node1.x) * node1.radius
-        y_start = node1.y + np.sign(node2.y-node1.y) * node1.radius
+    def start_point(self, node1, node2):
+        dx = (node2.x - node1.x)
+        dy = (node2.y - node1.y)
+        length = np.sqrt(dx*dx + dy*dy)
+        x = dx / length
+        y = dy / length
 
-        # arrow length
-        dx = abs(node1.x - node2.x) - 2.5* node1.radius
-        dy = abs(node1.y - node2.y) - 2.5* node1.radius
+        x_start = node1.x + x*np.cos(np.pi/12) * node1.radius
+        y_start = node1.y + y*np.sin(np.pi/12) * node1.radius
 
-        # we don't want xoffset and yoffset to both be non-nul
-        yoffset = 0.4 * self.node_radius * np.sign(node2.x-node1.x)
-        if yoffset == 0:
-            xoffset = 0.4 * self.node_radius * np.sign(node2.y-node1.y)
-        else:
-            xoffset = 0
+        return x_start, y_start
+
+    def add_arrows(self, ax, node1_ix, node2_ix):
+        p12 = self.M[node1_ix, node2_ix]
+        p21 = self.M[node2_ix, node1_ix]
+
+        # Node 2 comes after node 1 in the order
+        if node1_ix > node2_ix:
+            tmp = node1_ix
+            node1_ix = node2_ix
+            node2_ix = tmp
+
+        rel_offset = node2_ix - node1_ix
+
+        # Arrow from node 1 to node 2
+        n1_beg = [self.anchor_x[node1_ix, 2*rel_offset], self.anchor_y[node1_ix,2*rel_offset]]
+        n2_end = [self.anchor_x[node2_ix, -2*rel_offset], self.anchor_y[node2_ix, -2*rel_offset]]
+        
+        # Arrow from node 2 to node 1
+        n2_beg = [self.anchor_x[node2_ix,  -(2*rel_offset+1)],  self.anchor_y[node2_ix,  -(2*rel_offset+1)]]
+        n1_end = [self.anchor_x[node1_ix,(2*rel_offset+1)], self.anchor_y[node1_ix,(2*rel_offset+1)]]
 
         arrow = mpatches.FancyArrow(
-            x_start + xoffset,
-            y_start + yoffset,
-            dx * np.sign(node2.x-node1.x),
-            dy * np.sign(node2.y-node1.y),
-            width = self.arrow_width*(0.3+2.5*prob),
-            head_width = self.arrow_head_width
+            n1_beg[0],
+            n1_beg[1],
+            n2_end[0] - n1_beg[0],
+            n2_end[1] - n1_beg[1],
+            width = self.arrow_width*(0.3+2.5*p12),
+            head_width = self.arrow_head_width,
+            length_includes_head=True
         )
         p = PatchCollection(
             [arrow],
@@ -151,10 +162,32 @@ class MarkovChain:
         ax.add_collection(p)
 
         # Probability to add?
-        x_prob = x_start + xoffset + 0.2*dx*np.sign(node2.x-node1.x)
-        y_prob = y_start + yoffset + 0.2*dy*np.sign(node2.y-node1.y)
-        if prob:
-            ax.annotate(str(prob), xy=(x_prob, y_prob), color='#000000', **self.text_args)
+        x_prob = n1_beg[0] + 0.2*(n2_end[0] - n1_beg[0])
+        y_prob = n1_beg[1] + 0.2*(n2_end[1] - n1_beg[1])
+        if p12:
+            ax.annotate(str(p12), xy=(x_prob, y_prob), color='#000000', **self.text_args)
+
+        arrow21 = mpatches.FancyArrow(
+            n2_beg[0],
+            n2_beg[1],
+            n1_end[0] - n2_beg[0],
+            n1_end[1] - n2_beg[1],
+            width = self.arrow_width*(0.3+2.5*p21),
+            head_width = self.arrow_head_width,
+            length_includes_head=True
+        )
+        p = PatchCollection(
+            [arrow21],
+            edgecolor = self.arrow_edgecolor,
+            facecolor = self.arrow_facecolor
+        )
+        ax.add_collection(p)
+
+        # Probability to add?
+        x_prob = n2_beg[0] + 0.2*(n1_end[0] - n2_beg[0])
+        y_prob = n2_beg[1] + 0.2*(n1_end[1] - n2_beg[1])
+        if p21:
+            ax.annotate(str(p21), xy=(x_prob, y_prob), color='#000000', **self.text_args)
 
 
     def draw(self, img_path=None, title_=None):
@@ -186,8 +219,10 @@ class MarkovChain:
                     else:
                         self.nodes[i].add_self_loop(ax, prob = self.M[i,j], direction='down')
                 # directed arrows
+                elif i > j:
+                    continue
                 elif self.M[i,j] > 0:
-                    self.add_arrow(ax, self.nodes[i], self.nodes[j], prob = self.M[i,j])
+                    self.add_arrows(ax, i, j)
 
         plt.axis('off')
         
@@ -196,5 +231,6 @@ class MarkovChain:
 
         if img_path:
             plt.savefig(img_path)
+            plt.savefig(f'{img_path[:-3]}svg')
             
         plt.show()
