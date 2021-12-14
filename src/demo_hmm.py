@@ -11,55 +11,26 @@ import matplotlib.pyplot as plt
 from markovchain import MarkovChain
 
 def main():
+
+    #--------------------------------------------------------------------------
+    # N-state Markov chain
+    #--------------------------------------------------------------------------
+    states = [i for i in range(2, 10)]
+    for N in states:
+        
+        P = np.random.random((N, N))
+        for n in range(N):
+            P[n,:] = P[n,:]/np.sum(P[n,:])
+        P = np.around(P, 3)
+
+        init_probs = np.random.random(N)
+        init_probs = np.around(init_probs / np.sum(init_probs), 3)
+        
+        mean = np.random.random((N, 3))
+        
+        mc = MarkovChain(P, [f'{i+1}' for i in range(N)], init_probs, mean)
+        mc.draw()#"../img/markov-chain-N-states-hmm.png")
     
-    #--------------------------------------------------------------------------
-    # 2-state Markov chain
-    #--------------------------------------------------------------------------
-    P = np.array([[0.8, 0.2], [0.1, 0.9]]) # Transition matrix
-    init_probs = np.array([0.4, 0.6])
-    mean = np.array([
-        [0.1, 0.4, 0.1, 0.4, 0.1, 0.4],
-        [0.22, 0.33, 0.22, 0.33, 0.22, 0.33]
-    ])
-    mc = MarkovChain(P, [r'$Z^1$', r'$Z^2$'], init_probs, mean)
-    mc.draw("../img/markov-chain-two-states-hmm.png")
-    
-    #--------------------------------------------------------------------------
-    # 3-state Markov chain
-    #--------------------------------------------------------------------------
-    P = np.array([
-        [0.8, 0.1, 0.1],
-        [0.1, 0.7, 0.2],
-        [0.1, 0.7, 0.2],
-    ])
-    init_probs = np.array([0.3, 0.1, 0.6])
-    mean = np.array([
-            [12, 2, 4, 9],
-            [51, 3, 4, 5],
-            [13, 7, 2, 90]
-    ])
-    mc = MarkovChain(P, [r'$Z^1$', r'$Z^2$', r'$Z^3$'], init_probs, mean)
-    mc.draw("../img/markov-chain-three-states-hmm.png")
-    
-    #--------------------------------------------------------------------------
-    # 4-state Markov chain
-    #--------------------------------------------------------------------------
-    P = np.array([
-        [0.65, 0.2, 0.15, 0.0], 
-        [0.3, 0.3, 0.3, 0.15],
-        [0.1, 0.0, 0.7, 0.15],
-        [0.4, 0.2, 0.3, 0.1]
-    ])
-    init_probs = np.array([0.1, 0.2, 0.6, 0.1])
-    mean = np.array([
-	    [0.66, 0.3, 0.66, 0.3],
-	    [2.2, 9.3, 0.66, 0.3],
-        [1.2, 8.9, 0.66, 0.3],
-	    [9.1, 0.3, 0.66, 0.3]
-	])
-    mc = MarkovChain(P, [r'$Z^1$', r'$Z^2$', r'$Z^3$', r'$Z^4$'], init_probs, mean)
-    mc.draw("../img/markov-chain-four-states-hmm.png")
- 
 
 if __name__ == "__main__":
     main()

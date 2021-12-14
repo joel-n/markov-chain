@@ -5,7 +5,7 @@ class Geometry:
     def get_coordinates(self, n_nodes):
 
         coords = []
-        base_x = 5
+        base_x = 6
         base_y = 0
         ang = 2*np.pi/n_nodes
         
