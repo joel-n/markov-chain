@@ -7,34 +7,25 @@ from markovchain import MarkovChain
 def main():
     
     #--------------------------------------------------------------------------
-    # 2-state Markov chain
+    # N-state Markov chain
     #--------------------------------------------------------------------------
-    P = np.array([[0.8, 0.2], [0.1, 0.9]]) # Transition matrix
-    mc = MarkovChain(P, ['1', '2'])
-    mc.draw("../img/markov-chain-two-states.png")
-    
-    #--------------------------------------------------------------------------
-    # 3-state Markov chain
-    #--------------------------------------------------------------------------
-    P = np.array([
-        [0.8, 0.1, 0.1],
-        [0.1, 0.7, 0.2],
-        [0.1, 0.7, 0.2],
-    ])
-    mc = MarkovChain(P, ['A', 'B', 'C'])
-    mc.draw("../img/markov-chain-three-states.png")
- 
-    #--------------------------------------------------------------------------
-    # 4-state Markov chain
-    #--------------------------------------------------------------------------
-    P = np.array([
-        [0.8, 0.1, 0.1, 0.0], 
-        [0.1, 0.7, 0.0, 0.2],
-        [0.1, 0.0, 0.7, 0.2],
-        [0.1, 0.0, 0.7, 0.2]
-    ])
-    mc = MarkovChain(P, ['1', '2', '3', '4'])
-    mc.draw("../img/markov-chain-four-states.png")
+    states = [i for i in range(2, 10)]
+    for N in states:
+        
+        P = np.random.random((N, N))
+        for n in range(N):
+            P[n,:] = P[n,:]/np.sum(P[n,:])
+        P = np.around(P, 3)
+
+        init_probs = np.random.random(N)
+        init_probs = np.around(init_probs / np.sum(init_probs), 3)
+        
+        mean = np.random.random((N, 3))
+        
+        mc = MarkovChain(P, [f'{i+1}' for i in range(N)])
+        # mc = MarkovChain(P, [f'{i+1}' for i in range(N)], init_probs, mean)
+        mc.draw("../img/markov-chain-N-states.png")
+
  
 
 if __name__ == "__main__":
