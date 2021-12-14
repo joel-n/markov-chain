@@ -62,9 +62,26 @@ mc.draw("../img/markov-chain-four-states.png")
 
 ![four state markov chain transition diagram python](https://github.com/NaysanSaran/markov-chain/blob/master/img/markov-chain-four-states.png)
 
+## Contribution by [joel-n](https://github.com/joel-n)
+
+#### Plotting more than 4 states with automatic coordinate generation
+
+```
+N = 7
+P = np.random.random((N, N))
+for n in range(N):
+	P[n,:] = P[n,:]/np.sum(P[n,:])
+P = np.around(P, 3)
+
+mc = MarkovChain(P, [f'{i+1}' for i in range(N)])
+mc.draw("../img/markov-chain-N-states.png")
+```
+
+![seven state markov chain transition diagram python](https://https://github.com/joel-n/markov-chain/blob/master/img/markov-chain-N-states.png)
+
 
 #### Plotting HMM Markov chains with initial probabilities and emission means
-##### Contribution by joel-n
+
 
 ```
 P = np.array([
@@ -84,10 +101,10 @@ mc = MarkovChain(P, ['1', '2', '3', '4'], init_probs, mean)
 mc.draw("../img/markov-chain-four-states-HMM.png")
 ```
 
-![four state markov chain transition diagram python](https://github.com/joel-n/markov-chain/blob/master/img/markov-chain-four-states-HMM.png)
+![four state markov chain transition diagram python](https://https://github.com/joel-n/markov-chain/blob/master/img/markov-chain-four-states-HMM.png)
 
 
-## Author
+## Original author
 
 [Naysan Saran](naysan.ca)
 
