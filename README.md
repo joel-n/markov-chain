@@ -4,8 +4,8 @@ Simple Markov Chain visualization module in Python. Only requires **matplotlib**
 
 ## Description
 
-The current version works with 2 to 4 states. 
-
+The current version works with 2 to 9 states (can plot more, but graph becomes cluttery).
+ 
 ## Getting Started
 
 ### Dependencies
@@ -77,7 +77,7 @@ mc = MarkovChain(P, [f'{i+1}' for i in range(N)])
 mc.draw("../img/markov-chain-N-states.png")
 ```
 
-![seven state markov chain transition diagram python](https://https://github.com/joel-n/markov-chain/blob/master/img/markov-chain-N-states.png)
+![seven state markov chain transition diagram python](https://github.com/joel-n/markov-chain/blob/master/img/markov-chain-N-states.png)
 
 
 #### Plotting HMM Markov chains with initial probabilities and emission means
@@ -101,7 +101,7 @@ mc = MarkovChain(P, ['1', '2', '3', '4'], init_probs, mean)
 mc.draw("../img/markov-chain-four-states-HMM.png")
 ```
 
-![four state markov chain transition diagram python](https://https://github.com/joel-n/markov-chain/blob/master/img/markov-chain-four-states-HMM.png)
+![four state markov chain transition diagram python](https://github.com/joel-n/markov-chain/blob/master/img/markov-chain-four-states-HMM.png)
 
 
 ## Original author
