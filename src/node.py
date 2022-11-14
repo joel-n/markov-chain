@@ -94,7 +94,7 @@ class Node():
             #ax.annotate(np.array2string(self.mean, precision=3, separator='\n'), xy=(x_offset, y_offset), color='#000000', **self.text_args_mean)
         
         
-    def add_self_loop(self, ax, prob=None, direction='up'):
+    def add_self_loop(self, ax, prob=None, direction='up', proportional_width=True):
         """
         Draws a self loop
         """
@@ -114,14 +114,19 @@ class Node():
             prob_y = self.y - 1.4*self.radius
             x_cent = ring_x + self.radius - (self.ring_width/2)
             y_cent = ring_y + 0.15
-            
+           
+        if proportional_width:
+            W = self.ring_width*(0.3+2.5*prob)
+        else:
+            W = self.ring_width
+        
         # Add the ring
         ring = mpatches.Wedge(
             (ring_x, ring_y), 
             self.radius, 
             start, 
             angle, 
-            width = self.ring_width*(0.3+2.5*prob)
+            width = W
         )
         # Add the triangle (arrow)
         offset = 0.2

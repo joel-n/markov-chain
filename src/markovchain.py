@@ -131,7 +131,7 @@ class MarkovChain:
 
         return x_start, y_start
 
-    def add_arrows(self, ax, node1_ix, node2_ix):
+    def add_arrows(self, ax, node1_ix, node2_ix, proportional_width=True):
         p12 = self.M[node1_ix, node2_ix]
         p21 = self.M[node2_ix, node1_ix]
 
@@ -151,13 +151,20 @@ class MarkovChain:
         n2_beg = [self.anchor_x[node2_ix,  -(2*rel_offset+1)],  self.anchor_y[node2_ix,  -(2*rel_offset+1)]]
         n1_end = [self.anchor_x[node1_ix,(2*rel_offset+1)], self.anchor_y[node1_ix,(2*rel_offset+1)]]
 
+        if proportional_width:
+            W1 = self.arrow_width*(0.3+2.5*p12)
+            W2 = self.arrow_width*(0.3+2.5*p21)
+        else:
+            W1 = self.arrow_width
+            W2 = self.arrow_width
+            
         if p12:
             arrow = mpatches.FancyArrow(
                 n1_beg[0],
                 n1_beg[1],
                 n2_end[0] - n1_beg[0],
                 n2_end[1] - n1_beg[1],
-                width = self.arrow_width*(0.3+2.5*p12),
+                width = W1,
                 head_width = self.arrow_head_width,
                 length_includes_head=True
             )
@@ -178,7 +185,7 @@ class MarkovChain:
                 n2_beg[1],
                 n1_end[0] - n2_beg[0],
                 n1_end[1] - n2_beg[1],
-                width = self.arrow_width*(0.3+2.5*p21),
+                width = W2,
                 head_width = self.arrow_head_width,
                 length_includes_head=True
             )
@@ -194,7 +201,7 @@ class MarkovChain:
             ax.annotate(str(p21), xy=(x_prob, y_prob), color='#000000', **self.text_args)
 
 
-    def draw(self, img_path=None, title_=None):
+    def draw(self, img_path=None, title_=None, proportional_width=True):
         """
         Draw the Markov Chain
         """
@@ -216,19 +223,19 @@ class MarkovChain:
         for i in range(self.n_states):
             for j in range(self.n_states):
                 # self loops
-                if i == j:
+                if i == j and self.M[i,j]>0:
                     # Loop direction
                     if self.nodes[i].y >= 0:
-                        self.nodes[i].add_self_loop(ax, prob = self.M[i,j], direction='up')
+                        self.nodes[i].add_self_loop(ax, prob = self.M[i,j], direction='up', proportional_width=proportional_width)
                     else:
-                        self.nodes[i].add_self_loop(ax, prob = self.M[i,j], direction='down')
+                        self.nodes[i].add_self_loop(ax, prob = self.M[i,j], direction='down', proportional_width=proportional_width)
                 # directed arrows
                 elif i > j:
                     continue
                 else:
-                    self.add_arrows(ax, i, j)
+                    self.add_arrows(ax, i, j, proportional_width)
 
-        self.add_arrows(ax, 0, self.n_states-1)
+        self.add_arrows(ax, 0, self.n_states-1, proportional_width)
 
         plt.axis('off')
         

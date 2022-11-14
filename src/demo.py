@@ -24,7 +24,7 @@ def main():
         
         mc = MarkovChain(P, [f'{i+1}' for i in range(N)])
         # mc = MarkovChain(P, [f'{i+1}' for i in range(N)], init_probs, mean)
-        mc.draw("../img/markov-chain-N-states.png")
+        mc.draw("../img/markov-chain-N-states_test.png", proportional_width=False)
 
  
 
